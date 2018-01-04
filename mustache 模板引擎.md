@@ -83,5 +83,36 @@ obj 是数据源对象，mustache 会把模板中属性标签替换成与 obj �
 	{{#stooges}}
 		{{name}}
 	{{/stooges}}
+####3、示例   
+（1）index.html  
+  
+	<!DOCTYPE html>
+	<html lang="en">
+	<head>
+	    <meta charset="UTF-8">
+	    <title>test</title>
+	</head>
+	<body>
+	    <div id="J_wrapper"></div>
+	    <script src="require.js" charset="UTF-8"></script>
+	    <script>require(['app/tpl']);</script>
+	</body>
+	</html>
+（2）tpl/helloworld.mustache    
 
+	<div>
+	    {{value}}
+	</div>
+（3）app/tpl.js
+
+	define(["mustache"],function(mustache){
+	        require(['text!tpl/helloworld.mustache'],function(tpl){
+	            mustache.parse(tpl)
+	            var view ={value : "hello world"},
+	                html = mustache.render(tpl, view); // 第二个参数必须是对象
+	            document.getElementById("J_wrapper").innerHTML = html;
+	
+	        })
+	    });
+（4）引入的 js 有： mustache.js、require.js、text.js
 参考：[http://www.cnblogs.com/lyzg/p/5133250.html](http://www.cnblogs.com/lyzg/p/5133250.html)
