@@ -79,6 +79,7 @@
 
 	// webpack.config.js文件头部引入插件
 	const uglify = require('uglifyjs-webpack-plugin');
+	const htmlPlugin= require('html-webpack-plugin');
 	
 	// 插件配置
 	plugins:[
@@ -92,4 +93,35 @@
 		    }),
 	  ],
 
+<b>（1）JS 压缩</b>        
+&emsp;&emsp;在webpack中JS压缩使用的是 uglifyjs-webpack-plugin插件。
+
+	const uglify = require('uglifyjs-webpack-plugin');
 	
+	plugins: [
+		new uglify();
+	]
+ <b>注意：</b> 在开发环境中使用该插件会报错，因为在开发预览时需要明确报错行数和错误信息，所以不需要对JS压缩，而生产环境中才会对JS压缩。devServer用于开发环境，而压缩JS用于生产环境，在开发中做生产环境的事情，所以会报错。
+
+<b>（2）打包HTML</b>       
+&emsp;&emsp;要将 HTML 文件从 src 目录下打包到 dist 目录下，需要借助 html-webpack-plugin 插件。该插件需要安装。
+
+	npm install html-webpack-plugin --save-dev
+
+配置：
+
+	const htmlPlugin = require('html-webpack-plugin');
+	
+	plugins: [
+		new htmlPlugin({
+			minify: {
+				removeAttributeQuotes: true
+			},
+			hash: true,
+			template: './src/index.html'
+		})
+	]
+
+ - minify：是对HTML文件进行压缩，removeAttributeQuotes是去除属性的双引号。
+ - hash：为了避免缓存js，加入 hash
+ - template：是要打包的HTML模板路径和文件名称。
