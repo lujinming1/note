@@ -116,3 +116,37 @@ obj 是数据源对象，mustache 会把模板中属性标签替换成与 obj �
 	    });
 （4）引入的 js 有： mustache.js、require.js、text.js
 参考：[http://www.cnblogs.com/lyzg/p/5133250.html](http://www.cnblogs.com/lyzg/p/5133250.html)
+
+####4、注意
+- <b>问题</b>   
+
+&emsp;&emsp;当我们双击HTML文件，或者在Sublime中右键选择“open in browser”，浏览器会报一个错：
+
+	Failed to load file:///E:/testspace/mustache_test/tpl/helloworld.mustache: 
+	Cross origin requests are only supported for protocol schemes: 
+	http, data, chrome, chrome-extension, https.
+
+错误消息为：    
+&emsp;&emsp;跨域请求仅支持：http, data, chrome, chrome-extension, https 等，不支持 file协议。这是由于浏览器（Webkit内核）的安全策略决定了file协议访问的应用无法使用 XMLHttpRequest对象。     
+&emsp;&emsp;sublime 默认是没有内置HTTP服务器的，所以是以 file 的方式打开，并产生了该问题。
+     
+- <b>解决方法</b>
+
+<strong>（1）配置浏览器</strong>
+ 
+Windows：
+
+设置Chrome的快捷方式属性，在“目标”后面加上`--allow-file-access-from-files`，注意前面有个空格，重新打开Chrome即可。
+
+Mac：
+
+只能通过终端打开浏览器：打开终端，输入下面命令：open -a “Google Chrome” –args –disable-web-security然后就可以屏蔽安全访问了[ –args：此参数可有可无] 
+
+<strong>（2）安装HTTP服务器</strong>  
+
+&emsp;&emsp;若使用IDE，则无需配置，因为每个用于Web开发的IDE都内置HTTP服务器。    
+&emsp;&emsp;编辑器一般没有内置HTTP服务器，下面以sublime为例进行安装 Sublime Server插件。     
+
+	1、在package control install中搜索 sublime server，然后安装。（具体安装不做略，与其他插件安装步骤一样）
+	2、启动sublime server。方法：Tool → SublimeServer → Start SublimeServer
+	3、打开HTML文件，在右键菜单中选择View in SublimeServer，此时就可以以HTTP方式在浏览器中访问该文件了。若View in SublimeServer 为灰色不可点时，可能是未启动成功，或者端口已被占用（SublimeServer默认使用8080端口）。
