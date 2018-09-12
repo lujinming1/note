@@ -115,3 +115,11 @@ git是一个基于内容寻址的存储系统，其记录的是内容而不是�
 	git pull 相当于git fetch + git merge。
 	
 	git clone：克隆一个远程仓库为本地仓库。
+
+开始 clone，如果觉得仓库太大，可以在 git clone 中加入参数 --depth=1，只拉取最近的一个 revision
+
+	git clone --depth=1 https://github.com/xxx/xxxx.git
+如果后面想看历史版本，可以使用 `git fetch`
+
+	git fetch --unshallow  更新获取完整历史版本
+	

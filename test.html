@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <style type="text/css">
+    #wrapDiv, #innerP, #textSpan{
+        margin: 5px;padding: 5px;box-sizing: border-box;cursor: default;
+    }
+    #wrapDiv{
+        width: 300px;height: 300px;border: indianred 3px solid;
+    }
+    #innerP{
+        width: 200px;height: 200px;border: hotpink 3px solid;
+    }
+    #textSpan{
+        display: block;width: 100px;height: 100px;border: orange 3px solid;
+    }
+    </style>
+</head>
+<body>
+
+
+<script type="text/javascript">
+    function A (){
+    this.colors = ['red', 'blue'];
+}
+A.prototype.getc = function (){
+    return this.colors;
+}
+function B (age){
+    A.call(this);  // 第二次调用 A 的构造函数
+    this.age = age;
+}
+console.log(B.prototype.constructor)
+B.prototype = new A();  // 第一次调用 A 的构造函数
+console.log(B.prototype.constructor)
+// B.prototype.constructor = B; // 弥补因重写原型而失去的默认的 constructor 属性
+var ins1 = new B(12);
+console.log(ins1.getc()); // ['red', 'blue']
+ins1.colors.push('green');
+console.log(ins1.colors); // ['red', 'blue', 'green']
+console.log(ins1.age);  // 12
+
+var ins2 = new B(13);
+console.log(ins2.colors); // ['red', 'blue']
+console.log(ins2.age);  // 13
+</script>>
+
+
+<!--      <div id="wrapDiv">wrapDiv
+        <p id="innerP">innerP
+            <span id="textSpan">textSpan</span>
+        </p>
+    </div>
+    <script>
+    var wrapDiv = document.getElementById("wrapDiv");
+    var innerP = document.getElementById("innerP");
+    var textSpan = document.getElementById("textSpan");
+
+    // 捕获阶段绑定事件
+    window.addEventListener("click", function(e){
+        console.log(e)
+        console.log("window 捕获", e.target.nodeName, e.currentTarget.nodeName);
+    }, true);
+
+    document.addEventListener("click", function(e){
+        console.log("document 捕获", e.target.nodeName, e.currentTarget.nodeName);
+    }, true);
+
+    document.documentElement.addEventListener("click", function(e){
+        console.log("documentElement 捕获", e.target.nodeName, e.currentTarget.nodeName);
+    }, true);
+
+    document.body.addEventListener("click", function(e){
+        console.log("body 捕获", e.target.nodeName, e.currentTarget.nodeName);
+    }, true);
+
+    wrapDiv.addEventListener("click", function(e){
+        console.log("wrapDiv 捕获", e.target.nodeName, e.currentTarget.nodeName);
+    }, true);
+
+    innerP.addEventListener("click", function(e){
+        console.log("innerP 捕获", e.target.nodeName, e.currentTarget.nodeName);
+    }, true);
+
+    textSpan.addEventListener("click", function(e){
+    	
+        console.log("textSpan 捕获", e.target.nodeName, e.currentTarget.nodeName);
+    }, true);
+
+    // 冒泡阶段绑定的事件
+    window.addEventListener("click", function(e){
+        console.log("window 冒泡", e.target.nodeName, e.currentTarget.nodeName);
+    }, false);
+
+    document.addEventListener("click", function(e){
+        console.log("document 冒泡", e.target.nodeName, e.currentTarget.nodeName);
+    }, false);
+
+    document.documentElement.addEventListener("click", function(e){
+        console.log("documentElement 冒泡", e.target.nodeName, e.currentTarget.nodeName);
+    }, false);
+
+    document.body.addEventListener("click", function(e){
+        console.log("body 冒泡", e.target.nodeName, e.currentTarget.nodeName);
+    }, false);
+
+    wrapDiv.addEventListener("click", function(e){
+        console.log("wrapDiv 冒泡", e.target.nodeName, e.currentTarget.nodeName);
+    }, false);
+
+    innerP.addEventListener("click", function(e){
+        console.log("innerP 冒泡", e.target.nodeName, e.currentTarget.nodeName);
+    }, false);
+
+    textSpan.addEventListener("click", function(e){
+        console.log("textSpan 冒泡", e.target.nodeName, e.currentTarget.nodeName);
+    }, false);
+</script> -->
+
+
+
+
+<hr>
+
+<div id="app">
+    <input type="text" id='a' v-model="text">
+    {{ text }}
+    <input type="text" id="b" v-model="test2">
+    {{test2}}
+</div>
+
+<script>
+    function Dep(){
+        this.subs = [];
+    }
+    Dep.prototype = {
+        addSub: function(sub){
+            this.subs.push(sub);
+        },
+
+        noetify: function(){
+            this.subs.forEach(function(sub){
+                sub.update();
+            })
+        }
+    }
+    Dep.target = null;
+
+    function Watcher(vm, node, name){
+        Dep.target = this;
+        this.name = name;
+        this.node = node;
+        this.vm = vm;
+        this.update();
+        Dep.target = null;
+    }
+    Watcher.prototype = {
+        update: function(){
+            this.get();
+            this.node.nodeValue = this.value;
+        },
+        get: function(){
+            this.value = this.vm[this.name];
+        }
+    }
+
+    function defineReactive(obj, key, val){
+        var dep = new Dep();
+
+        Object.defineProperty(obj, key, {
+            get: function(){
+                if(Dep.target) dep.addSub(Dep.target);
+                return val;
+            },
+            set: function(newVal){
+                if(newVal === val) return;
+                val = newVal;
+                dep.noetify();
+            }
+        })
+    }
+
+    function observe(obj, vm){
+        Object.keys(obj).forEach(function(key){
+            defineReactive(vm, key, obj[key])
+        })
+    }
+
+
+    function nodeToFragment(node, vm){
+        var flag = document.createDocumentFragment();
+        var child;
+        while(child = node.firstChild){
+            compile(child,vm);
+            flag.appendChild(child);
+        }
+        return flag;
+    }
+
+    function compile(node, vm){
+    
+        var reg = /\{\{(.*)\}\}/;
+        // 节点类型为元素
+        if(node.nodeType === 1){
+            var attr = node.attributes;
+            // 解析属性
+            for(var i = 0; i < attr.length; i++){
+                if(attr[i].nodeName == 'v-model'){
+                    var name = attr[i].nodeValue;  //获取v-model绑定的属性名
+                    node.addEventListener('input', function(e){
+                        vm[name] = e.target.value;
+                    })
+                    node.value = vm[name]; // 将data的值赋给该node
+                    node.removeAttribute('v-model');
+                }
+            }
+        }
+
+        // 节点类型为text
+        if(node.nodeType === 3){
+            if(reg.test(node.nodeValue)){
+                var name = RegExp.$1;
+                name = name.trim();
+                // node.nodeValue = vm[name];
+                new Watcher(vm, node, name);
+            }
+        }
+    }
+
+    function Vue(option){
+        this.data = option.data;
+
+        var data = this.data;
+        observe(data, this);
+
+        var id = option.el;
+        var dom = nodeToFragment(document.getElementById(id), this);
+        document.getElementById(id).appendChild(dom);
+    }
+
+    var vm = new Vue({
+        el: 'app',
+        data: {
+            text: 'hello',
+            test2: []
+        }
+    })
+
+    
+</script>
+</body>
+</html>
