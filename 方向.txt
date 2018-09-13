@@ -14,3 +14,18 @@ react 父子组件如何通信
 工作中做了什么
 
 在组里有没有挑头做些事情
+
+
+this props state应用场景
+
+node 如何处理多个请求
+
+css 多列布局
+
+HTTP实现服务器推
+
+拖拽的实现（非dragger）
+
+socket（websocket）
+
+iOS

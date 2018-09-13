@@ -36,33 +36,25 @@ Vue使用的是可变数据（data ()=>{a:1}），React更强调数据的不可�
 
 ###2、数据流不同
 
-Vue1.0 Parent <-(Props)-> child <-V-model-> Dom
-Vue2.0 Parent -(Props)-> child <-V-model-> Dom
-React Parent -(Props)-> Child -state-> Dom
+	Vue1.0 Parent <-(Props)-> child <-V-model-> Dom
+	Vue2.0 Parent -(Props)-> child <-V-model-> Dom
+	React Parent -(Props)-> Child -state-> Dom
 
 child 修改 Parent 使用事件的方式进行修改
 
 Vue有双向数据绑定
 React提倡单向数据流
 
-###3、组合组件的方式
-Vue：mixin （）
-React：Hoc(高阶组件)
-https://juejin.im/post/5914fb4a0ce4630069d1f3f6
-https://segmentfault.com/a/1190000008814336
-
-高阶组件本质就是高阶函数，React的组件是一个纯粹的函数，所以高阶函数对于React来说非常简单。
-Vue组件是一个被包装的函数，并不简单的就是我们定义组件的时候传入的对象或者函数。比如我们定义的模板怎么被编译的？比如声明的props怎么接收到的？这些都是vue创建组件实例的时候隐式干的事。由于vue默默帮我们做了这么多事，所以我们自己如果直接把组件的声明包装一下，返回一个高阶组件，那么这个被包装的组件就无法正常工作了。
 
 
 ###4、组件通信的区别
-Vue Parent -props -> child .... childn   
-    Parent <- event - child
-	parent -... Provide/Inject-> childn
-
-React Parent -props -> child .... childn   
-    Parent <- callback - child
-	parent -... context-> childn
+	Vue Parent -props -> child .... childn   
+	    Parent <- event - child
+		parent -... Provide/Inject-> childn
+	
+	React Parent -props -> child .... childn   
+	    Parent <- callback - child
+		parent -... context-> childn
 
 可以看到，React 本身并不支持自定义事件，Vue中子组件向父组件传递消息有两种方式：事件和回调函数，而且Vue更倾向于使用事件。但是在 React 中我们都是使用回调函数的，这可能是他们二者最大的区别。
 
@@ -160,6 +152,18 @@ react中render函数是支持闭包特性的，所以我们import的组件在ren
 
 而这两点的区别，其实也是因为 React 和 Vue的设计理念上的区别。React更偏向于构建稳定大型的应用，非常的科班化。相比之下，Vue更偏向于简单迅速的解决问题，更灵活，不那么严格遵循条条框框。因此也会给人一种大型项目用React，小型项目用 Vue 的感觉。
 
+
+
+
+###3、组合组件的方式
+Vue：mixin （）
+React：Hoc(高阶组件)
+https://juejin.im/post/5914fb4a0ce4630069d1f3f6
+https://segmentfault.com/a/1190000008814336
+
+高阶组件本质就是高阶函数，React的组件是一个纯粹的函数，所以高阶函数对于React来说非常简单。
+
+Vue组件是一个被包装的函数，并不简单的就是我们定义组件的时候传入的对象或者函数。比如我们定义的模板怎么被编译的？比如声明的props怎么接收到的？这些都是vue创建组件实例的时候隐式干的事。由于vue默默帮我们做了这么多事，所以我们自己如果直接把组件的声明包装一下，返回一个高阶组件，那么这个被包装的组件就无法正常工作了。
 ##例子
 比如虚拟dom 可能又让你对比diff 算法，template 又会问编译jsx 的过程
 
