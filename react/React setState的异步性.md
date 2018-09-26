@@ -89,6 +89,8 @@ Calls to setState are asynchronous - don’t rely on this.state to reflect the n
 
 要想知道为何，就要探索一下 setState 的实现，还是等下一篇在具体分析原因吧。
 
+react.setState->react-dom.enqueueSetState->react-dom.scheduleWork$1->react-dom.requestWork ->isBatchingUpdates
+
 <b>总结：</b>
 
 - 在组件生命周期中同步调用setState或者在react事件绑定中，setState是通过异步更新的。
