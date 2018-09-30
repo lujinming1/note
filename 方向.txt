@@ -18,7 +18,7 @@ react 父子组件如何通信
 
 this props state应用场景(w)
 
-node 如何处理多个请求
+node 如何处理多个请求  （Node.js 的单进程单线程无阻塞IO + event loop 模式，能hold住大量的并发请求）
 
 css 多列布局
 
