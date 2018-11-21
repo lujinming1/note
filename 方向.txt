@@ -24,7 +24,7 @@ css 多列布局
 
 HTTP实现服务器推
 
-拖拽的实现（非dragger）
+拖拽的实现（非dragger） https://segmentfault.com/a/1190000014093547 
 
 socket（websocket）
 
