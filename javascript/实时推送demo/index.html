@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Page Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+    <div>
+        <label>轮询：</label>
+        <span class="polling"></span>
+    </div>
+    <div>
+        <label>长轮询：</label>
+        <span class="long-polling"></span>
+    </div>
+    <div>
+        <label>长连接（iframe)：</label>
+        <span class="iframeText"></span>
+    </div>
+    <div>
+        <label>WebSocket：</label>
+        <span class="websocketText"></span>
+    </div>
+    <iframe src="/iframeStream?callback=parent.iframeCallback" style="display:none;"></iframe>
+    
+    <script>
+        let pollingText = document.getElementsByClassName('polling')[0];
+        let longPollingText = document.getElementsByClassName('long-polling')[0];
+        let iframeText = document.getElementsByClassName('iframeText')[0];
+        let websocketText = document.getElementsByClassName('websocketText')[0];
+
+        let intervalTime = setInterval(function pollingFun(){
+            let xhr = new XMLHttpRequest();
+            xhr.open('GET', '/polling', true);
+            xhr.onreadystatechange = function(){
+                if(xhr.readyState == 4 && xhr.status == 200){
+                    pollingText.innerText = xhr.responseText;
+                }
+            }
+            xhr.send();
+        },1000);
+
+        function longPolling(){
+            let xhr = new XMLHttpRequest();
+            xhr.open('GET', '/longpolling', true);
+            xhr.timeout = 2000; // 超时
+            xhr.onreadystatechange = function(){
+                if(xhr.readyState == 4){
+                    if(xhr.status == 200){
+                        longPollingText.innerText = xhr.responseText;
+                    }
+                    longPolling();
+                }
+            }
+            xhr.ontimeout = function(){
+                longPolling();
+            }
+            xhr.send();
+        }
+        longPolling();
+
+        function iframeCallback(res){
+            iframeText.innerText = res;
+        }
+
+        let socket = new WebSocket('ws://localhost:8080');
+        socket.onopen = function(){
+            console.log('客户端连接成功')
+            socket.send('hello');
+        }
+        socket.onmessage = function(event){
+            websocketText.innerText = event.data;
+            console.log('收到服务端消息：', event.data);
+            
+        }
+
+    </script>
+    
+</body>
+</html>
